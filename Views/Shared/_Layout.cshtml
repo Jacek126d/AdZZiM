@@ -1,13 +1,11 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - AdZZiM</title>
-    <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/AdZZiM.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
@@ -20,13 +18,50 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Start</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Products" asp-action="Index">Oferta</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-controller="Categories" asp-action="Index">Kategorie</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-primary" asp-controller="Orders" asp-action="Create">Złóż Zamówienie</a>
+                        </li>
+                        
+                        @if (User.Identity.IsAuthenticated&&!User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Index">Moje Zamówienia</a>
+                            </li>
+                        }
+                        else if (User.IsInRole("Admin"))
+                        {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Index">Wszystkie zamówienia</a>
+                        </li>
+                        }
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-danger" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Panel Administratora
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                                    <li><a class="dropdown-item" asp-controller="Orders" asp-action="Index">Zarządzaj Zamówieniami</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Products" asp-action="Create">Dodaj Produkt</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Categories" asp-action="Create">Dodaj Kategorię</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Users" asp-action="Index">Zarządzaj Użytkownikami</a></li>
+                                </ul>
+                            </li>
+                        }
                     </ul>
+                    <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
@@ -39,7 +74,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2026 - AdZZiM - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2025 - AdZZiM - <a asp-area="" asp-controller="Home" asp-action="Privacy">Polityka Prywatności</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

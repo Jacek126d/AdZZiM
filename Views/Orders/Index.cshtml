@@ -1,0 +1,55 @@
+﻿@model IEnumerable<AdZZiM.Models.Order>
+
+@{
+    ViewData["Title"] = "Zamówienia";
+}
+
+<h1>@(User.IsInRole("Admin") ? "Wszystkie Zamówienia" : "Moje Zamówienia")</h1>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Nie masz jeszcze żadnych zamówień.</div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Data</th>
+                @if (User.IsInRole("Admin"))
+                {
+                    <th>Klient</th>
+                }
+                <th>Adres</th>
+                <th>Kwota</th>
+                <th>Status</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.OrderDate.ToString("yyyy-MM-dd HH:mm")</td>
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <td>@(item.User?.UserName ?? "Brak danych")</td>
+                    }
+
+                    <td>@item.DeliveryAddress</td>
+                    <td>@item.TotalAmount PLN</td>
+                    <td>@item.Status</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Szczegóły</a>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Usuń</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

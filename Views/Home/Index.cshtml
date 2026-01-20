@@ -1,8 +1,61 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Strona Główna";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Witaj w AdZZiM</h1>
+    <p class="lead">System zarządzania zamówieniami i magazynem.</p>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Przeglądaj Ofertę</h5>
+                <p class="card-text">Sprawdź produkty</p>
+                <a asp-controller="Products" asp-action="Index" class="btn btn-outline-primary">Zobacz Produkty</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100 border-primary">
+            <div class="card-body">
+                <h5 class="card-title">Twoje Zamówienia</h5>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <p class="card-text">Złóż nowe zamówienie lub sprawdź statusy swoich poprzednich zakupów.</p>
+                    <a asp-controller="Orders" asp-action="Create" class="btn btn-primary">Złóż Zamówienie</a>
+                }
+                else
+                {
+                    <p class="card-text">Zaloguj się, aby móc składać zamówienia i śledzić ich status.</p>
+                    <a href="/Identity/Account/Login" class="btn btn-primary">Zaloguj się</a>
+                    <a href="/Identity/Account/Register" class="btn btn-link">Zarejestruj się</a>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100 @(User.IsInRole("Admin") ? "border-danger" : "text-muted bg-light")">
+            <div class="card-body">
+                <h5 class="card-title">Panel Administracyjny</h5>
+                @if (User.IsInRole("Admin"))
+                {
+                    <p class="card-text">Pełna kontrola nad magazynem, edycja produktów i zarządzanie zamówieniami.</p>
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Products" asp-action="Create" class="btn btn-danger btn-sm">Dodaj produkt</a>
+                        <a asp-controller="Categories" asp-action="Create" class="btn btn-danger btn-sm">Dodaj kategorie</a>
+                        <a asp-controller="Orders" asp-action="Index" class="btn btn-danger btn-sm">Zarządzaj zamówieniami</a>
+                        <a asp-controller="Users" asp-action="Index" class="btn btn-danger btn-sm">Zarządzaj użytkownikami</a>
+                    </div>
+                }
+                else
+                {
+                    <p class="card-text"><small>Sekcja dostępna tylko dla użytkowników z uprawnieniami Administratora.</small></p>
+                }
+            </div>
+        </div>
+    </div>
 </div>

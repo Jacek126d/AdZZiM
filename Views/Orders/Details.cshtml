@@ -1,0 +1,66 @@
+﻿@model AdZZiM.Models.Order
+
+@{
+    ViewData["Title"] = "Szczegóły zamówienia";
+}
+
+<h1>Szczegóły zamówienia nr @Model.Id</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">Data zamówienia</dt>
+        <dd class="col-sm-9">@Model.OrderDate.ToString("dd.MM.yyyy HH:mm")</dd>
+
+        <dt class="col-sm-3">Klient</dt>
+        <dd class="col-sm-9">
+            @(Model.User?.UserName ?? "Brak danych")
+        </dd>
+
+        <dt class="col-sm-3">Adres dostawy</dt>
+        <dd class="col-sm-9">@Model.DeliveryAddress</dd>
+
+        <dt class="col-sm-3">Metoda płatności</dt>
+        <dd class="col-sm-9">@Model.PaymentMethod</dd>
+
+        <dt class="col-sm-3">Status</dt>
+        <dd class="col-sm-9">
+            <span class="badge bg-primary">@Model.Status</span>
+        </dd>
+    </dl>
+</div>
+
+<h4 class="mt-4">Zakupione produkty</h4>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Produkt</th>
+            <th>Cena jedn.</th>
+            <th>Ilość</th>
+            <th>Suma</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.OrderItems)
+        {
+            <tr>
+                <td>@(item.Product?.Name ?? "Produkt usunięty")</td>
+                <td>@item.UnitPrice PLN</td>
+                <td>@item.Quantity</td>
+                <td>@(item.UnitPrice * item.Quantity) PLN</td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr class="table-dark">
+            <td colspan="3" class="text-end"><strong>Łącznie do zapłaty:</strong></td>
+            <td><strong>@Model.TotalAmount PLN</strong></td>
+        </tr>
+    </tfoot>
+</table>
+
+<div class="mt-3">
+
+    
+    <a asp-action="Index" class="btn btn-secondary">Powrót do listy</a>
+</div>

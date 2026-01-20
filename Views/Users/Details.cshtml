@@ -1,0 +1,27 @@
+﻿@model AdZZiM.Models.UserDetails
+
+@{
+    ViewData["Title"] = "Szczegóły";
+}
+
+
+<div class="alert alert-warning">
+    <strong>Szczegóły</strong> 
+</div>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Email / Login</dt>
+        <dd class="col-sm-10">@Model.User.Email</dd>
+        <dt class="col-sm-2">ID</dt>
+        <dd class="col-sm-10">@Model.User.Id</dd>
+        <dt class="col-sm-2">Pass-Hash</dt>
+        <dd class="col-sm-10">@Model.User.PasswordHash</dd>
+        <dt class="col-sm-2">Data założenia:</dt>
+        <dd class="col-sm-10">@Model.RegistrationDate.ToString("dd.MM.yyyy HH:mm:ss")</dd>  
+    </dl>
+    <div>
+        <a asp-action="Index">Powrót</a>
+    </div>
+
+</div>

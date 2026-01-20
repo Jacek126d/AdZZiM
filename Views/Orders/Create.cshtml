@@ -1,0 +1,150 @@
+﻿@model AdZZiM.Models.Order
+
+@{
+    ViewData["Title"] = "Składanie zamówienia";
+}
+
+<div class="container">
+    <h2 class="mb-4">Złóż nowe zamówienie</h2>
+
+    <form asp-action="Create" id="mainOrderForm">
+        <div class="row">
+            <div class="col-md-7">
+                <div class="card shadow-sm p-4 mb-4">
+                    <h5><i class="bi bi-geo-alt"></i> Dane dostawy</h5>
+                    <div class="form-group mb-3">
+                        <label asp-for="DeliveryAddress" class="form-label">Adres:</label>
+                        <textarea asp-for="DeliveryAddress" class="form-control" placeholder="Ulica, numer, kod pocztowy, miasto"></textarea>
+                        <span asp-validation-for="DeliveryAddress" class="text-danger"></span>
+                    </div>
+
+                    <div class="card shadow-sm p-4 mb-4">
+                        <h5><i class="bi bi-cart"></i> Produkty w zamówieniu</h5>
+                        <div id="product-list">
+                            <div class="row product-row mb-3">
+                                <div class="col-md-7">
+                                    <label class="form-label">Produkt</label>
+                                    <select name="ProductId" class="form-select product-select" asp-items="ViewBag.ProductId"></select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Ilość</label>
+                                    <input name="Quantity" type="number" value="1" min="1" class="form-control quantity-input" />
+                                </div>
+                                <div class="col-md-2 d-flex align-items-end">
+                                    <button type="button" class="btn btn-outline-danger remove-product" style="display:none;">&times;</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" id="add-product-btn" class="btn btn-outline-primary btn-sm mt-2">
+                            <i class="bi bi-plus-circle"></i> Dodaj kolejny produkt
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <div class="card shadow-sm p-4 h-100">
+                    <h5><i class="bi bi-truck"></i> Dostawa i Płatność</h5>
+                    <div class="mb-3 p-2 bg-light border rounded">
+                        <strong>Forma dostawy:</strong> Kurier (DPD/InPost)
+                        <input type="hidden" asp-for="ShippingMethod" value="Kurier" />
+                    </div>
+                    <div class="mt-3 p-3 bg-light border rounded text-center">
+                        <h4>Do zapłaty: <span id="totalPriceDisplay" class="text-primary fw-bold">0.00</span> PLN</h4>
+                    </div>
+                    <div class="form-group mb-4">
+                        <label asp-for="PaymentMethod" class="form-label">Metoda płatności</label>
+                        <select asp-for="PaymentMethod" id="payMethod" class="form-select">
+                            <option value="Przy odbiorze">Płatność przy odbiorze</option>
+                            <option value="Karta">Karta płatnicza (online)</option>
+                        </select>
+                    </div>
+
+
+                    <button type="button" onclick="processOrder()" class="btn btn-success btn-lg w-100">Potwierdzam zamówienie</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal fade" id="cardModal" data-bs-backdrop="static" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <div id="processingPay">
+                <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;"></div>
+                <h5>Autoryzacja transakcji...</h5>
+                <p class="text-muted">Karta: <span id="fakeCardNum"></span></p>
+                <p id="fakeUser" class="small"></p>
+            </div>
+            <div id="payDone" style="display:none;">
+                <div class="text-success display-1 mb-3"><i class="bi bi-check-circle-fill"></i></div>
+                <h3 class="text-success">Płatność udana!</h3>
+                <p>Zamówienie zostanie zaraz sfinalizowane.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        var prices = @Json.Serialize(ViewBag.ProductPrices);
+
+        function updatePrice() {
+            var total = 0;
+            $('.product-row').each(function() {
+                var productId = $(this).find('.product-select').val();
+                var quantity = $(this).find('.quantity-input').val();
+
+                if (productId && quantity && prices[productId]) {
+                    total += prices[productId] * quantity;
+                }
+            });
+            $('#totalPriceDisplay').text(total.toFixed(2));
+        }
+
+        $(document).ready(function() {
+
+            $('#add-product-btn').click(function() {
+                var newRow = $('.product-row:first').clone();
+                newRow.find('input').val(1);
+                newRow.find('.remove-product').show(); 
+                $('#product-list').append(newRow);
+                updatePrice();
+            });
+            $(document).on('click', '.remove-product', function() {
+                $(this).closest('.product-row').remove();
+                updatePrice();
+            });
+            $(document).on('change input', '.product-select, .quantity-input', updatePrice);
+
+            updatePrice();
+        });
+
+        function processOrder() {
+            var $form = $("#mainOrderForm");
+            if (!$form.valid()) return;
+
+            const method = document.getElementById('payMethod').value;
+            if (method === 'Karta') {
+                const myModal = new bootstrap.Modal(document.getElementById('cardModal'));
+                document.getElementById('fakeCardNum').innerText = "**** **** **** " + Math.floor(1000 + Math.random() * 9000);
+                document.getElementById('fakeUser').innerText = "Właściciel: @User.Identity.Name";
+                myModal.show();
+
+                setTimeout(() => {
+                    document.getElementById('processingPay').style.display = 'none';
+                    document.getElementById('payDone').style.display = 'block';
+                    setTimeout(() => { $form.submit(); }, 1500);
+                }, 2000);
+            } else {
+                $form.submit();
+            }
+        }
+    </script>
+}
+
