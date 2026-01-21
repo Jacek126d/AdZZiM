@@ -87,7 +87,7 @@ if (!app.Environment.IsDevelopment())
         {
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
             {
-                FileName = "http://localhost:7105", 
+                FileName = "https://localhost:7105", 
                 UseShellExecute = true
             });
         }
