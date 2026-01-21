@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<AdZZiM.Models.Category>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Kategoria";
 }
 
-<h1>Index</h1>
+
 @if (User.IsInRole("Admin"))
 {
     <p>
@@ -15,7 +15,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                <h1>Kategorie</h1>
             </th>
             <th></th>
         </tr>

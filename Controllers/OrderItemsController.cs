@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AdZZiM.Data;
+using AdZZiM.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using AdZZiM.Data;
-using AdZZiM.Models;
-using Microsoft.AspNetCore.Authorization;
 
 namespace AdZZiM.Controllers
 {
@@ -20,13 +15,13 @@ namespace AdZZiM.Controllers
             _context = context;
         }
 
-                public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.OrderItems.Include(o => o.Order).Include(o => o.Product);
             return View(await applicationDbContext.ToListAsync());
         }
 
-                public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -45,25 +40,25 @@ namespace AdZZiM.Controllers
             return View(orderItem);
         }
 
-                public IActionResult Create()
+        public IActionResult Create()
         {
-                        var products = _context.Products.Select(p => new
+            var products = _context.Products.Select(p => new
             {
                 p.Id,
-                                DisplayText = p.Name + " (" + p.Price + " PLN)",
+                DisplayText = p.Name + " (" + p.Price + " PLN)",
                 p.Price
             }).ToList();
 
             ViewData["OrderId"] = new SelectList(_context.Orders, "Id", "Id");
 
-                        ViewData["ProductId"] = new SelectList(products, "Id", "DisplayText");
+            ViewData["ProductId"] = new SelectList(products, "Id", "DisplayText");
 
-                                    ViewBag.ProductPrices = products.ToDictionary(x => x.Id, x => x.Price);
+            ViewBag.ProductPrices = products.ToDictionary(x => x.Id, x => x.Price);
 
             return View();
         }
 
-                                [HttpPost]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,OrderId,ProductId,Quantity,UnitPrice")] OrderItem orderItem)
         {
@@ -78,7 +73,7 @@ namespace AdZZiM.Controllers
             return View(orderItem);
         }
 
-                public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -95,7 +90,7 @@ namespace AdZZiM.Controllers
             return View(orderItem);
         }
 
-                                [HttpPost]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,OrderId,ProductId,Quantity,UnitPrice")] OrderItem orderItem)
         {
@@ -129,7 +124,7 @@ namespace AdZZiM.Controllers
             return View(orderItem);
         }
 
-                public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
@@ -148,7 +143,7 @@ namespace AdZZiM.Controllers
             return View(orderItem);
         }
 
-                [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

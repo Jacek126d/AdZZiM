@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
-using AdZZiM.Data;
+﻿using AdZZiM.Data;
 using AdZZiM.Models;
-using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 [Authorize]
 public class OrdersController : Controller
@@ -15,8 +15,8 @@ public class OrdersController : Controller
     {
         _context = context;
     }
-    
-        public async Task<IActionResult> Index()
+
+    public async Task<IActionResult> Index()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -24,18 +24,18 @@ public class OrdersController : Controller
 
         if (User.IsInRole("Admin"))
         {
-                        ordersQuery = ordersQuery.Include(o => o.User);
+            ordersQuery = ordersQuery.Include(o => o.User);
         }
         else
         {
-                        ordersQuery = ordersQuery.Where(o => o.UserId == userId);
+            ordersQuery = ordersQuery.Where(o => o.UserId == userId);
         }
 
         return View(await ordersQuery.OrderByDescending(o => o.OrderDate).ToListAsync());
     }
-        public IActionResult Create()
+    public IActionResult Create()
     {
-                LoadProductData();
+        LoadProductData();
         return View();
     }
 
@@ -56,7 +56,7 @@ public class OrdersController : Controller
         {
             decimal totalAmount = 0;
 
-            
+
             for (int i = 0; i < ProductId.Length; i++)
             {
                 var product = await _context.Products.FindAsync(ProductId[i]);
@@ -82,7 +82,7 @@ public class OrdersController : Controller
             return RedirectToAction("Index", "Home");
         }
 
-        
+
         LoadProductData(ProductId?.FirstOrDefault());
         return View(order);
     }
@@ -92,13 +92,13 @@ public class OrdersController : Controller
         var products = _context.Products.Select(p => new
         {
             p.Id,
-                        DisplayText = p.Name + " (" + p.Price + " PLN)",
+            DisplayText = p.Name + " (" + p.Price + " PLN)",
             p.Price
         }).ToList();
 
-                ViewBag.ProductId = new SelectList(products, "Id", "DisplayText", selectedProductId);
+        ViewBag.ProductId = new SelectList(products, "Id", "DisplayText", selectedProductId);
 
-                ViewBag.ProductPrices = products.ToDictionary(p => p.Id, p => p.Price);
+        ViewBag.ProductPrices = products.ToDictionary(p => p.Id, p => p.Price);
     }
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int? id)
@@ -120,7 +120,7 @@ public class OrdersController : Controller
         return View(order);
     }
 
-            [HttpPost, ActionName("Delete")]
+    [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteConfirmed(int id)
@@ -140,20 +140,21 @@ public class OrdersController : Controller
             return NotFound();
         }
 
-                var order = await _context.Orders
-            .Include(o => o.User)
-            .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product)             .FirstOrDefaultAsync(m => m.Id == id);
+        var order = await _context.Orders
+    .Include(o => o.User)
+    .Include(o => o.OrderItems)
+        .ThenInclude(oi => oi.Product).FirstOrDefaultAsync(m => m.Id == id);
 
         if (order == null)
         {
             return NotFound();
         }
 
-                        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (!User.IsInRole("Admin") && order.UserId != currentUserId)
         {
-            return Forbid();         }
+            return Forbid();
+        }
 
         return View(order);
     }

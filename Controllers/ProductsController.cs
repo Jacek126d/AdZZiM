@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AdZZiM.Data;
+using AdZZiM.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using AdZZiM.Data;
-using AdZZiM.Models;
-using Microsoft.AspNetCore.Authorization;
 
 namespace AdZZiM.Controllers
 {
@@ -20,14 +16,14 @@ namespace AdZZiM.Controllers
             _context = context;
         }
 
-                [AllowAnonymous]
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Products.Include(p => p.Category);
             return View(await applicationDbContext.ToListAsync());
         }
 
-                [AllowAnonymous]
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)

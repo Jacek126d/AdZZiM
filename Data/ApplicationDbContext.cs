@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using AdZZiM.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using AdZZiM.Models;
 
 namespace AdZZiM.Data
 {
@@ -21,9 +21,9 @@ namespace AdZZiM.Data
         {
             base.OnModelCreating(builder);
 
-                        builder.Entity<Product>()
-                .Property(p => p.Price)
-                .HasColumnType("decimal(18,2)");
+            builder.Entity<Product>()
+    .Property(p => p.Price)
+    .HasColumnType("decimal(18,2)");
 
             builder.Entity<OrderItem>()
                 .Property(oi => oi.UnitPrice)

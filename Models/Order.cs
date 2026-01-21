@@ -19,14 +19,14 @@ namespace AdZZiM.Models
         public string DeliveryAddress { get; set; } = "";
 
         [Display(Name = "Metoda wysyłki")]
-        public string ShippingMethod { get; set; } = "Kurier"; 
+        public string ShippingMethod { get; set; } = "Kurier";
         [Display(Name = "Metoda płatności")]
         public string PaymentMethod { get; set; } = "Przy odbiorze";
 
         [Display(Name = "Status")]
         public string Status { get; set; } = "W realizacji";
         [Display(Name = "Łączna kwota")]
-        [Column(TypeName = "decimal(18,2)")]         public decimal TotalAmount { get; set; }
+        [Column(TypeName = "decimal(18,2)")] public decimal TotalAmount { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }
 }

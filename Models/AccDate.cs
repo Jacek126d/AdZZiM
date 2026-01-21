@@ -11,7 +11,7 @@ namespace AdZZiM.Models
         public string UserId { get; set; }
         [ForeignKey("UserId")]
         public virtual IdentityUser? User { get; set; }
-        [Display(Name ="Data rejestracji")]
+        [Display(Name = "Data rejestracji")]
         public DateTime RegistrationDate { get; set; } = DateTime.Now;
     }
 }

@@ -1,19 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AdZZiM.Data;
+using AdZZiM.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AdZZiM.Data;
-using AdZZiM.Models;
-using System.Threading.Tasks;
-using System.Linq;
 
 namespace AdZZiM.Controllers
 {
-    [Authorize(Roles = "Admin")] 
+    [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
-        private readonly ApplicationDbContext _context;       
-        private readonly UserManager<IdentityUser> _userManager; 
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
         public UsersController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
@@ -71,11 +69,11 @@ namespace AdZZiM.Controllers
                 {
                     var profile = new AccDate
                     {
-                        UserId = user.Id,         
-                        RegistrationDate = DateTime.Now 
+                        UserId = user.Id,
+                        RegistrationDate = DateTime.Now
                     };
-                    _context.AccDates.Add(profile); 
-                    await _context.SaveChangesAsync(); 
+                    _context.AccDates.Add(profile);
+                    await _context.SaveChangesAsync();
                     await _userManager.AddToRoleAsync(user, "User");
                     return RedirectToAction(nameof(Index));
                 }

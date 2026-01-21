@@ -10,10 +10,11 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => {
+builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+{
     options.SignIn.RequireConfirmedAccount = false;
 
-        options.Password.RequireDigit = false;
+    options.Password.RequireDigit = false;
     options.Password.RequiredLength = 4;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireUppercase = false;
@@ -34,7 +35,7 @@ using (var scope = app.Services.CreateScope())
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
         var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
 
-                string[] roleNames = { "Admin", "User" };
+        string[] roleNames = { "Admin", "User" };
         foreach (var roleName in roleNames)
         {
             if (!await roleManager.RoleExistsAsync(roleName))
@@ -43,12 +44,12 @@ using (var scope = app.Services.CreateScope())
             }
         }
 
-                var adminEmail = "admin@adzzim.pl";
+        var adminEmail = "admin@adzzim.pl";
         var adminUser = await userManager.FindByEmailAsync(adminEmail);
         if (adminUser == null)
         {
             var newAdmin = new IdentityUser { UserName = adminEmail, Email = adminEmail };
-            var result = await userManager.CreateAsync(newAdmin, "admin222");             if (result.Succeeded)
+            var result = await userManager.CreateAsync(newAdmin, "admin222"); if (result.Succeeded)
             {
                 await userManager.AddToRoleAsync(newAdmin, "Admin");
             }
@@ -79,7 +80,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
-if (!app.Environment.IsDevelopment()) 
+if (!app.Environment.IsDevelopment())
 {
     app.Lifetime.ApplicationStarted.Register(() =>
     {
@@ -87,7 +88,7 @@ if (!app.Environment.IsDevelopment())
         {
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
             {
-                FileName = "https://localhost:7105", 
+                FileName = "https://localhost:7105",
                 UseShellExecute = true
             });
         }

@@ -1,6 +1,6 @@
-using System.Diagnostics;
 using AdZZiM.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace AdZZiM.Controllers
 {

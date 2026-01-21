@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using AdZZiM.Data;
+﻿using AdZZiM.Data;
 using AdZZiM.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AdZZiM.Controllers
 {
@@ -16,13 +16,13 @@ namespace AdZZiM.Controllers
             _context = context;
         }
 
-                [HttpGet]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
             return await _context.Products.ToListAsync();
         }
 
-                [HttpGet("{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
             var product = await _context.Products.FindAsync(id);
@@ -30,7 +30,7 @@ namespace AdZZiM.Controllers
             return product;
         }
 
-                [HttpPost]
+        [HttpPost]
         public async Task<ActionResult<Product>> PostProduct(Product product)
         {
             _context.Products.Add(product);
@@ -38,7 +38,7 @@ namespace AdZZiM.Controllers
             return CreatedAtAction("GetProduct", new { id = product.Id }, product);
         }
 
-                [HttpDelete("{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var product = await _context.Products.FindAsync(id);
