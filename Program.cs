@@ -79,5 +79,22 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
-
+if (!app.Environment.IsDevelopment()) 
+{
+    app.Lifetime.ApplicationStarted.Register(() =>
+    {
+        try
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "http://localhost:7105", 
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("nie udało się otworzyc " + ex.Message);
+        }
+    });
+}
 app.Run();
